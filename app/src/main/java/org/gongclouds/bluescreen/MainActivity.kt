@@ -113,34 +113,33 @@ fun Greeting(modifier: Modifier = Modifier) {
     val intent = Intent(context, AppListActivity::class.java)
 
     LaunchedEffect(key1 = time) {
-        sleep(5)
+        sleep(10)
 
         time++
 
-        if (time % 4 == 0) {
+        if (time % 8 == 0) {
             procssingIndex++
             if (procssingIndex == 19) {
                 procssingIndex = 0
             }
         }
 
-        if (time > 200) {
-            fail = true
-        }
-
-        if (time % 20 == 0) {
+        if (time % 20 == 0 && fail) {
             input = if (input == " ") {
                 "_"
             } else {
                 " "
             }
         }
+
+        if (time > 100) {
+            time = 0
+        }
     }
 
     if (fail) {
         Column(
             Modifier
-                .background(Color.Blue)
                 .fillMaxSize()
                 .padding(20.dp, 60.dp, 20.dp, 0.dp)
                 .pointerInput(Unit) {
@@ -149,7 +148,7 @@ fun Greeting(modifier: Modifier = Modifier) {
                             awaitPointerEventScope { awaitPointerEvent(PointerEventPass.Main) }
                         if (pointer.type == PointerEventType.Press) {
                             click++
-                            if (click == 5) {
+                            if (click == 9) {
                                 intent.let {
                                     launcher.launch(intent)
                                 }
@@ -158,50 +157,66 @@ fun Greeting(modifier: Modifier = Modifier) {
                     }
                 },
         ) {
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
-            ){
+            ) {
                 Text(
                     "Windows",
-                    modifier =  Modifier
-                        .padding(5.dp)
-                        .background(Color.White)
-                    ,
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .background(Color.Black),
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight(800),
-                    fontSize = 30.sp,
-                    color = Color.Blue,
+                    fontSize = 60.sp,
+                    color = Color.White,
                 )
             }
             Text(
-                color = Color.White,
-                text = "An error has occurred. To continue:"
-            )
-//        Text(
-//            color = Color.White,
-//            text = "Press Enter to return to Windows, or"
-//        )
-            Text(
-                color = Color.White,
-                text = "Press CTRL+ALT+DEL to restart your computer."
+                text = "An error has occurred. To continue:",
+                fontSize = 40.sp
             )
             Text(
-                color = Color.White,
-                text = "Error:${click}E:016F:BFF9B3D5"
+                text = "Press Enter to return to Windows, or",
+                fontSize = 40.sp
+            )
+            Text(
+                text = "Press CTRL+ALT+DEL to restart your",
+                fontSize = 40.sp
+            )
+            Text(
+                text = "computer.",
+                fontSize = 40.sp
+            )
+            Text(
+                text = "Error:${click}E:016F:BFF9B3D5",
+                fontSize = 40.sp
             )
             Text(
                 text = "Press any key to continue $input",
                 Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Justify,
-                color = Color.White,
+                fontSize = 40.sp,
             )
         }
     } else {
         Canvas(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    while (true) {
+                        val pointer =
+                            awaitPointerEventScope { awaitPointerEvent(PointerEventPass.Main) }
+                        if (pointer.type == PointerEventType.Press) {
+                            click++
+                            if (click == 2) {
+                                fail = true
+                            }
+                        }
+                    }
+                }
+            ,
             onDraw = {
                 drawImage(
                     imageBackGround,
