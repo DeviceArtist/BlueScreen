@@ -64,7 +64,9 @@ fun AppList(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val packageManager = context.packageManager
     val installedApps = remember(packageManager) {
-        packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+        packageManager.getInstalledApplications(PackageManager.GET_META_DATA).filter {
+            it.flags and ApplicationInfo.FLAG_SYSTEM == 0
+        }
     }
 
 
@@ -81,23 +83,30 @@ fun AppList(modifier: Modifier = Modifier) {
 
     var x = 0
     val arr = ArrayList<ApplicationInfo>()
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-
+    LazyColumn(modifier = Modifier.fillMaxSize().padding(20.dp)) {
         items(installedApps) { app ->
             val appName = packageManager.getApplicationLabel(app).toString()
             val icon: Drawable = packageManager.getApplicationIcon(app)
             val img = icon.toBitmap(40, 40).asImageBitmap()
 
-            if(!appName.contains('.')){
-                Row (
+            if (!appName.contains('.')) {
+                Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier.fillMaxWidth()
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .height(80.dp)
-                ){
-                    Image(img,null)
-                    Text(packageManager.getApplicationLabel(app).toString())
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier
+                    ) {
+                        Image(img, null, modifier = Modifier.padding(0.dp,0.dp,20.dp,0.dp))
+                        Text(packageManager.getApplicationLabel(app).toString())
+                    }
                     Button(
+                        modifier = Modifier,
                         onClick = {
                             launchPackage(app.packageName)
                         }
@@ -105,41 +114,8 @@ fun AppList(modifier: Modifier = Modifier) {
                         Text("Launch")
                     }
                 }
+
             }
         }
     }
-
-//    LazyColumn(modifier = Modifier.fillMaxSize()) {
-//
-//        items(installedApps) {
-//
-//
-//            Button(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(60.dp),
-//                onClick = {
-//                    launchPackage(it.packageName)
-//                }
-//            ) {
-//                val icon: Drawable = packageManager.getApplicationIcon(it)
-//                val img = icon.toBitmap(40, 40).asImageBitmap()
-//                Canvas(
-//                    modifier = Modifier,
-//                    onDraw = {
-//                        drawImage(
-//                            img,
-//                            dstSize = IntSize(40, 40), // Resizes the image
-//                            dstOffset = IntOffset(0, 0) // Positions the image
-//                        )
-//                    }
-//                )
-////                Icon(img,null)
-//                Text(
-//                    text = packageManager.getApplicationLabel(it).toString()
-//                )
-//            }
-//
-//        }
-//    }
 }

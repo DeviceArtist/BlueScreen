@@ -2,6 +2,7 @@ package org.gongclouds.bluescreen
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
 import androidx.activity.ComponentActivity
@@ -55,6 +56,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         setContent {
             BlueScreenTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -122,7 +124,7 @@ fun Greeting(modifier: Modifier = Modifier) {
             }
         }
 
-        if (time > 300) {
+        if (time > 200) {
             fail = true
         }
 
