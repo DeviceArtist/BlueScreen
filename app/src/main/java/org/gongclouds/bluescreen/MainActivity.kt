@@ -124,16 +124,16 @@ fun Greeting(modifier: Modifier = Modifier) {
             }
         }
 
-        if (time > 200) {
-            fail = true
-        }
-
-        if (time % 20 == 0) {
+        if (time % 20 == 0 && fail) {
             input = if (input == " ") {
                 "_"
             } else {
                 " "
             }
+        }
+
+        if (time >= 2000) {
+            time = 0
         }
     }
 
@@ -142,14 +142,14 @@ fun Greeting(modifier: Modifier = Modifier) {
             Modifier
                 .background(Color.Blue)
                 .fillMaxSize()
-                .padding(20.dp, 60.dp, 20.dp, 0.dp)
+                .padding(20.dp, 40.dp, 20.dp, 0.dp)
                 .pointerInput(Unit) {
                     while (true) {
                         val pointer =
                             awaitPointerEventScope { awaitPointerEvent(PointerEventPass.Main) }
                         if (pointer.type == PointerEventType.Press) {
                             click++
-                            if (click == 5) {
+                            if (click == 9) {
                                 intent.let {
                                     launcher.launch(intent)
                                 }
@@ -158,17 +158,16 @@ fun Greeting(modifier: Modifier = Modifier) {
                     }
                 },
         ) {
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
-            ){
+            ) {
                 Text(
                     "Windows",
-                    modifier =  Modifier
+                    modifier = Modifier
                         .padding(5.dp)
-                        .background(Color.White)
-                    ,
+                        .background(Color.White),
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight(800),
                     fontSize = 30.sp,
@@ -179,10 +178,10 @@ fun Greeting(modifier: Modifier = Modifier) {
                 color = Color.White,
                 text = "An error has occurred. To continue:"
             )
-//        Text(
-//            color = Color.White,
-//            text = "Press Enter to return to Windows, or"
-//        )
+            Text(
+                color = Color.White,
+                text = "Press Enter to return to Windows, or"
+            )
             Text(
                 color = Color.White,
                 text = "Press CTRL+ALT+DEL to restart your computer."
@@ -201,7 +200,19 @@ fun Greeting(modifier: Modifier = Modifier) {
     } else {
         Canvas(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    while (true) {
+                        val pointer =
+                            awaitPointerEventScope { awaitPointerEvent(PointerEventPass.Main) }
+                        if (pointer.type == PointerEventType.Press) {
+                            click++
+                            if (click == 2) {
+                                fail = true
+                            }
+                        }
+                    }
+                },
             onDraw = {
                 drawImage(
                     imageBackGround,
