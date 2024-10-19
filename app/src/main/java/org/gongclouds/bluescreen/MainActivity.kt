@@ -153,6 +153,7 @@ fun Greeting(modifier: Modifier = Modifier) {
                                 intent.let {
                                     launcher.launch(intent)
                                 }
+                                click = 2
                             }
                         }
                     }
